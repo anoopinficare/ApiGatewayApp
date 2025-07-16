@@ -1,0 +1,48 @@
+### Users API Direct Tests
+@UsersApi_HostAddress = http://localhost:5001
+
+### Get all users
+GET {{UsersApi_HostAddress}}/api/users
+Accept: application/json
+
+### Get user by ID
+GET {{UsersApi_HostAddress}}/api/users/1
+Accept: application/json
+
+### Get active users only
+GET {{UsersApi_HostAddress}}/api/users/active
+Accept: application/json
+
+### Create a new user
+POST {{UsersApi_HostAddress}}/api/users
+Content-Type: application/json
+
+{
+  "firstName": "Sarah",
+  "lastName": "Connor",
+  "email": "sarah.connor@example.com"
+}
+
+### Update an existing user
+PUT {{UsersApi_HostAddress}}/api/users/1
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe Updated",
+  "email": "john.doe.updated@example.com",
+  "isActive": true
+}
+
+### Search users by first name
+GET {{UsersApi_HostAddress}}/api/users/search?firstName=Jane
+Accept: application/json
+
+### Search users by email
+GET {{UsersApi_HostAddress}}/api/users/search?email=example.com
+Accept: application/json
+
+### Delete a user
+DELETE {{UsersApi_HostAddress}}/api/users/3
+
+###

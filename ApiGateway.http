@@ -1,0 +1,131 @@
+### API Gateway Test Requests for Users and Locations APIs
+
+@ApiGateway_HostAddress = http://localhost:5000
+
+###########################################
+# USERS API TESTS (via API Gateway - /api1)
+###########################################
+
+### Get all users
+GET {{ApiGateway_HostAddress}}/api1/users
+Accept: application/json
+
+### Get user by ID
+GET {{ApiGateway_HostAddress}}/api1/users/1
+Accept: application/json
+
+### Get active users only
+GET {{ApiGateway_HostAddress}}/api1/users/active
+Accept: application/json
+
+### Create a new user
+POST {{ApiGateway_HostAddress}}/api1/users
+Content-Type: application/json
+
+{
+  "firstName": "Alice",
+  "lastName": "Williams",
+  "email": "alice.williams@example.com"
+}
+
+### Update an existing user
+PUT {{ApiGateway_HostAddress}}/api1/users/1
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe.updated@example.com",
+  "isActive": true
+}
+
+### Search users by name
+GET {{ApiGateway_HostAddress}}/api1/users/search?firstName=Jane
+Accept: application/json
+
+### Delete a user
+DELETE {{ApiGateway_HostAddress}}/api1/users/3
+
+###
+
+###########################################
+# LOCATIONS API TESTS (via API Gateway - /api2)
+###########################################
+
+### Get all locations
+GET {{ApiGateway_HostAddress}}/api2/locations
+Accept: application/json
+
+### Get location by ID
+GET {{ApiGateway_HostAddress}}/api2/locations/1
+Accept: application/json
+
+### Get active locations only
+GET {{ApiGateway_HostAddress}}/api2/locations/active
+Accept: application/json
+
+### Get locations by city
+GET {{ApiGateway_HostAddress}}/api2/locations/by-city/New York
+Accept: application/json
+
+### Get locations by state
+GET {{ApiGateway_HostAddress}}/api2/locations/by-state/CA
+Accept: application/json
+
+### Create a new location
+POST {{ApiGateway_HostAddress}}/api2/locations
+Content-Type: application/json
+
+{
+  "name": "Statue of Liberty",
+  "address": "Liberty Island",
+  "city": "New York",
+  "state": "NY",
+  "country": "USA",
+  "postalCode": "10004",
+  "latitude": 40.6892,
+  "longitude": -74.0445
+}
+
+### Update an existing location
+PUT {{ApiGateway_HostAddress}}/api2/locations/1
+Content-Type: application/json
+
+{
+  "name": "Central Park - Updated",
+  "address": "Central Park",
+  "city": "New York",
+  "state": "NY",
+  "country": "USA",
+  "postalCode": "10024",
+  "latitude": 40.7829,
+  "longitude": -73.9654,
+  "isActive": true
+}
+
+### Search locations
+GET {{ApiGateway_HostAddress}}/api2/locations/search?city=New York&state=NY
+Accept: application/json
+
+### Get nearby locations (within 50km of Times Square)
+GET {{ApiGateway_HostAddress}}/api2/locations/nearby?latitude=40.7580&longitude=-73.9855&radiusKm=50
+Accept: application/json
+
+### Delete a location
+DELETE {{ApiGateway_HostAddress}}/api2/locations/4
+
+###
+
+###########################################
+# DIRECT API TESTS (bypass gateway)
+###########################################
+
+### Direct Users API test
+GET http://localhost:5001/api/users
+Accept: application/json
+
+### Direct Locations API test
+GET http://localhost:5002/api/locations
+Accept: application/json
+
+###

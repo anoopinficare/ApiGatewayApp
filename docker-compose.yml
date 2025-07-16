@@ -1,0 +1,180 @@
+version: '3.8'
+
+services:
+  # API Gateway - Load Balancer
+  api-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8080:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+    volumes:
+      - ./ocelot.docker.json:/app/ocelot.json:ro
+      - ./logs:/app/logs
+    depends_on:
+      users-api:
+        condition: service_healthy
+      locations-api:
+        condition: service_healthy
+      users-api-1:
+        condition: service_healthy
+      users-api-2:
+        condition: service_healthy
+      locations-api-1:
+        condition: service_healthy
+      locations-api-2:
+        condition: service_healthy
+    networks:
+      - api-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Primary Users API
+  users-api:
+    build:
+      context: ./TestApis/UsersApi
+      dockerfile: Dockerfile
+    container_name: users-api
+    ports:
+      - "5001:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+    networks:
+      - api-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/api/users"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # Load Balanced Users API Instance 1
+  users-api-1:
+    build:
+      context: ./TestApis/UsersApi
+      dockerfile: Dockerfile
+    container_name: users-api-1
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+    networks:
+      - api-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/api/users"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  # Load Balanced Users API Instance 2
+  users-api-2:
+    build:
+      context: ./TestApis/UsersApi
+      dockerfile: Dockerfile
+    container_name: users-api-2
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+    networks:
+      - api-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/api/users"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  # Primary Locations API
+  locations-api:
+    build:
+      context: ./TestApis/LocationsApi
+      dockerfile: Dockerfile
+    container_name: locations-api
+    ports:
+      - "5002:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+    networks:
+      - api-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/api/locations"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # Load Balanced Locations API Instance 1
+  locations-api-1:
+    build:
+      context: ./TestApis/LocationsApi
+      dockerfile: Dockerfile
+    container_name: locations-api-1
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+    networks:
+      - api-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/api/locations"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # Load Balanced Locations API Instance 2
+  locations-api-2:
+    build:
+      context: ./TestApis/LocationsApi
+      dockerfile: Dockerfile
+    container_name: locations-api-2
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+    networks:
+      - api-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/api/locations"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+networks:
+  api-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  logs:
+    driver: local

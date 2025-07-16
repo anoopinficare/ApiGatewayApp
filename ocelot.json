@@ -1,0 +1,76 @@
+{
+    "Routes": [
+        {
+            "UpstreamPathTemplate": "/api/user/{everything}",
+            "UpstreamHttpMethod": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE"
+            ],
+            "Key": "users-api",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5001
+                },
+                {
+                    "Host": "localhost",
+                    "Port": 5011
+                },
+                {
+                    "Host": "localhost",
+                    "Port": 5021
+                }
+            ],
+            "DownstreamPathTemplate": "/api/{everything}",
+            "DownstreamScheme": "http",
+            "LoadBalancerOptions": {
+                "Type": "RoundRobin"
+            },
+            "QoSOptions": {
+                "ExceptionsAllowedBeforeBreaking": 3,
+                "DurationOfBreak": 5000,
+                "TimeoutValue": 10000
+            }
+        },
+        {
+            "DownstreamPathTemplate": "/api/{everything}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5002
+                },
+                {
+                    "Host": "localhost",
+                    "Port": 5012
+                },
+                {
+                    "Host": "localhost",
+                    "Port": 5022
+                }
+            ],
+            "UpstreamPathTemplate": "/api/location/{everything}",
+            "UpstreamHttpMethod": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE"
+            ],
+            "Key": "locations-api",
+            "LoadBalancerOptions": {
+                "Type": "LeastConnection"
+            },
+            "QoSOptions": {
+                "ExceptionsAllowedBeforeBreaking": 3,
+                "DurationOfBreak": 5000,
+                "TimeoutValue": 10000
+            }
+        }
+    ],
+    "GlobalConfiguration": {
+        "BaseUrl": "http://localhost:5003",
+        "RequestIdKey": "OcRequestId"
+    }
+}

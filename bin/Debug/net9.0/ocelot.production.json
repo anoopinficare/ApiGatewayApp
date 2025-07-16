@@ -1,0 +1,72 @@
+{
+    "Routes": [
+        {
+            "UpstreamPathTemplate": "/api/user/{everything}",
+            "UpstreamHttpMethod": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE"
+            ],
+            "Key": "users-api",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "api-server-1.company.com",
+                    "Port": 5001
+                },
+                {
+                    "Host": "api-server-2.company.com",
+                    "Port": 5001
+                },
+                {
+                    "Host": "api-server-3.company.com",
+                    "Port": 5001
+                }
+            ],
+            "DownstreamPathTemplate": "/api/{everything}",
+            "DownstreamScheme": "https",
+            "LoadBalancerOptions": {
+                "Type": "WeightedRoundRobin"
+            },
+            "QoSOptions": {
+                "ExceptionsAllowedBeforeBreaking": 3,
+                "DurationOfBreak": 5000,
+                "TimeoutValue": 10000
+            }
+        },
+        {
+            "UpstreamPathTemplate": "/api/location/{everything}",
+            "UpstreamHttpMethod": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE"
+            ],
+            "Key": "locations-api",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "geo-server-1.company.com",
+                    "Port": 5002
+                },
+                {
+                    "Host": "geo-server-2.company.com",
+                    "Port": 5002
+                }
+            ],
+            "DownstreamPathTemplate": "/api/{everything}",
+            "DownstreamScheme": "https",
+            "LoadBalancerOptions": {
+                "Type": "LeastConnection"
+            },
+            "QoSOptions": {
+                "ExceptionsAllowedBeforeBreaking": 2,
+                "DurationOfBreak": 3000,
+                "TimeoutValue": 8000
+            }
+        }
+    ],
+    "GlobalConfiguration": {
+        "BaseUrl": "https://api-gateway.company.com",
+        "RequestIdKey": "OcRequestId"
+    }
+}

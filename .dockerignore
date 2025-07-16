@@ -1,0 +1,52 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+*.md
+
+# Docker
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Build artifacts
+bin/
+obj/
+out/
+
+# Visual Studio
+.vs/
+.vscode/
+*.user
+*.suo
+*.sln.docstates
+
+# Testing
+TestResults/
+coverage/
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node modules (if any)
+node_modules/
+npm-debug.log
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+
+# Exclude test APIs from being copied into gateway image
+TestApis/
+
+# Scripts that aren't needed in container
+scripts/

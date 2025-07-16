@@ -1,0 +1,66 @@
+### Locations API Direct Tests
+@LocationsApi_HostAddress = http://localhost:5002
+
+### Get all locations
+GET {{LocationsApi_HostAddress}}/api/locations
+Accept: application/json
+
+### Get location by ID
+GET {{LocationsApi_HostAddress}}/api/locations/1
+Accept: application/json
+
+### Get active locations only
+GET {{LocationsApi_HostAddress}}/api/locations/active
+Accept: application/json
+
+### Get locations by city
+GET {{LocationsApi_HostAddress}}/api/locations/by-city/New York
+Accept: application/json
+
+### Get locations by state
+GET {{LocationsApi_HostAddress}}/api/locations/by-state/CA
+Accept: application/json
+
+### Create a new location
+POST {{LocationsApi_HostAddress}}/api/locations
+Content-Type: application/json
+
+{
+  "name": "Empire State Building",
+  "address": "350 5th Ave",
+  "city": "New York",
+  "state": "NY",
+  "country": "USA",
+  "postalCode": "10118",
+  "latitude": 40.7484,
+  "longitude": -73.9857
+}
+
+### Update an existing location
+PUT {{LocationsApi_HostAddress}}/api/locations/1
+Content-Type: application/json
+
+{
+  "name": "Central Park - Updated",
+  "address": "Central Park",
+  "city": "New York",
+  "state": "NY",
+  "country": "USA",
+  "postalCode": "10024",
+  "latitude": 40.7829,
+  "longitude": -73.9654,
+  "isActive": true
+}
+
+### Search locations
+GET {{LocationsApi_HostAddress}}/api/locations/search?city=New York&state=NY
+Accept: application/json
+
+### Get nearby locations (within 50km of Times Square)
+GET {{LocationsApi_HostAddress}}/api/locations/nearby?latitude=40.7580&longitude=-73.9855&radiusKm=50
+Accept: application/json
+
+### Delete a location
+DELETE {{LocationsApi_HostAddress}}/api/locations/4
+
+###

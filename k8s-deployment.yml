@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ocelot-config
+data:
+  ocelot.json: |
+    {
+      "Routes": [
+        {
+          "UpstreamPathTemplate": "/api/user/{everything}",
+          "UpstreamHttpMethod": ["GET", "POST", "PUT", "DELETE"],
+          "Key": "users-api",
+          "DownstreamHostAndPorts": [
+            {
+              "Host": "users-api-service",
+              "Port": 80
+            }
+          ],
+          "DownstreamPathTemplate": "/api/{everything}",
+          "DownstreamScheme": "http",
+          "LoadBalancerOptions": {
+            "Type": "RoundRobin"
+          }
+        }
+      ],
+      "GlobalConfiguration": {
+        "BaseUrl": "http://api-gateway-service"
+      }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-api
+spec:
+  replicas: 3  # 3 instances across different nodes
+  selector:
+    matchLabels:
+      app: users-api
+  template:
+    metadata:
+      labels:
+        app: users-api
+    spec:
+      containers:
+      - name: users-api
+        image: your-registry/users-api:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: users-api-service
+spec:
+  selector:
+    app: users-api
+  ports:
+  - port: 80
+    targetPort: 80
+  type: ClusterIP
